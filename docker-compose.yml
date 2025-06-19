@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+
+  # Base NoSQL pour l'écriture
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # Zookeeper pour Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # Bus d'événements Kafka
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # API FastAPI pour recevoir les commandes (écriture Mongo + Kafka)
+  api-write:
+    build: ./api-write
+    container_name: api_write
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+      - kafka
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      KAFKA_SERVER: kafka:9092
+    volumes:
+      - ./api-write:/app
+
+volumes:
+  mongo_data:
