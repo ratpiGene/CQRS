@@ -1,1 +1,50 @@
-test
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.egg-info/
+.env
+.env.*
+*.log
+
+# === VSCode / IDE ===
+.vscode/
+.idea/
+*.swp
+
+# === Docker volumes (optionnel si tu montes des volumes locaux) ===
+/volumes/
+*/__data__/
+
+# === Docker ===
+# Evite de versionner les fichiers de build si inutiles
+**/Dockerfile~
+docker-compose.override.yml
+*.pid
+
+# === Node / frontend (si présent dans ton projet) ===
+node_modules/
+dist/
+build/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Test / coverage ===
+.coverage
+htmlcov/
+*.cover
+.cache/
+.pytest_cache/
+
+# === MySQL/Mongo data (si bind-mountés localement) ===
+mysql_data/
+mongo_data/
+kafka_data/
+
+
+test/
