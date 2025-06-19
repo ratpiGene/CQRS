@@ -48,5 +48,23 @@ services:
     volumes:
       - ./api-write:/app
 
+  # Synchro SQL et NoSQL
+  sync-worker:
+    build: ./sync-worker
+    container_name: sync_worker
+    depends_on:
+      - kafka
+      - mongo
+      - mysql
+    environment:
+      KAFKA_SERVER: kafka:9092
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: techshop
+    volumes:
+      - ./sync-worker:/app
+
 volumes:
   mongo_data:
+  mysql_data:
